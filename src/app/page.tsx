@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ChevronDown } from 'lucide-react';
+import Link from 'next/link';
 
 function LandingPage() {
   return (
@@ -24,7 +25,7 @@ function LandingPage() {
         <nav className="absolute bottom-0 left-0 right-0 z-10">
           <div className="container mx-auto">
             <div className="flex items-center gap-8 border-t border-stone-500 py-3 text-sm">
-              <a href="#" className="flex items-center gap-1 text-white/80 hover:text-white">DASHBOARD <ChevronDown className="w-4 h-4"/></a>
+              <Link href="/analysis" className="flex items-center gap-1 text-white/80 hover:text-white">ANALYSIS</Link>
               <a href="#" className="text-white/80 hover:text-white">SOURCES</a>
               <a href="#" className="text-white/80 hover:text-white">FEEDBACK</a>
             </div>
