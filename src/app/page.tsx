@@ -1,19 +1,98 @@
 
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
+import { InteractiveMap } from '@/components/InteractiveMap';
+import { VegetationMap } from '@/components/VegetationMap';
+import { ClimateMap } from '@/components/ClimateMap';
+import { environmentalService, AnalysisResponse, ClimateResponse } from '@/services/environmentalService';
 
 function LandingPage() {
+  const [latitude, setLatitude] = useState<string>('');
+  const [longitude, setLongitude] = useState<string>('');
+  const [vegetationData, setVegetationData] = useState<any[]>([]);
+  const [climateData, setClimateData] = useState<any[]>([]);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isAnalyzingClimate, setIsAnalyzingClimate] = useState(false);
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResponse | null>(null);
+  const [climateResult, setClimateResult] = useState<ClimateResponse | null>(null);
+  const [error, setError] = useState<string>('');
+  
+  // Parse coordinates for the map
+  const lat = latitude ? parseFloat(latitude) : null;
+  const lng = longitude ? parseFloat(longitude) : null;
+  
+  // Validate coordinates
+  const isValidLat = lat !== null && !isNaN(lat) && lat >= -90 && lat <= 90;
+  const isValidLng = lng !== null && !isNaN(lng) && lng >= -180 && lng <= 180;
+  const validCoordinates = isValidLat && isValidLng;
+
+  // Handle vegetation analysis
+  const handleVegetationAnalysis = async () => {
+    if (!validCoordinates || !lat || !lng) {
+      setError('Please enter valid coordinates first');
+      return;
+    }
+
+    setIsAnalyzing(true);
+    setError('');
+
+    try {
+      const result = await environmentalService.analyzeVegetation({
+        latitude: lat,
+        longitude: lng,
+        radius: 500,
+        name: `Vegetation Analysis - ${lat.toFixed(4)}, ${lng.toFixed(4)}`
+      });
+
+      setAnalysisResult(result);
+      setVegetationData(result.features || []);
+    } catch (err) {
+      setError('Failed to retrieve vegetation data. Please check your connection and try again.');
+      console.error('Analysis error:', err);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  // Handle climate analysis
+  const handleClimateAnalysis = async () => {
+    if (!validCoordinates || !lat || !lng) {
+      setError('Please enter valid coordinates first');
+      return;
+    }
+
+    setIsAnalyzingClimate(true);
+    setError('');
+
+    try {
+      const result = await environmentalService.analyzeClimate({
+        latitude: lat,
+        longitude: lng,
+        radius: 500,
+        name: `Climate Analysis - ${lat.toFixed(4)}, ${lng.toFixed(4)}`
+      });
+
+      setClimateResult(result);
+      setClimateData(result.stations || []);
+    } catch (err) {
+      setError('Failed to retrieve climate data. Please check your connection and try again.');
+      console.error('Climate analysis error:', err);
+    } finally {
+      setIsAnalyzingClimate(false);
+    }
+  };
   return (
     <div className="bg-white">
       <section
         className="relative w-full h-[50vh] bg-cover bg-center text-white flex flex-col items-center justify-center"
-        style={{ backgroundImage: "url('https://placehold.co/1920x1080')" }}
+        style={{ backgroundImage: "url('/siteimage.jpg')" }}
         data-ai-hint="aerial forest"
       >
         <div className="absolute inset-0 bg-black/60" />
@@ -65,7 +144,17 @@ function LandingPage() {
                   >
                     Latitude
                   </Label>
-                  <Input id="latitude" placeholder="Latitude" className="mt-1" />
+                  <Input 
+                    id="latitude" 
+                    placeholder="e.g., 40.7128" 
+                    className="mt-1"
+                    value={latitude}
+                    onChange={(e) => setLatitude(e.target.value)}
+                    type="number"
+                    step="any"
+                    min="-90"
+                    max="90"
+                  />
                 </div>
                 <div>
                   <Label
@@ -76,8 +165,14 @@ function LandingPage() {
                   </Label>
                   <Input
                     id="longitude"
-                    placeholder="Longitude"
+                    placeholder="e.g., -74.0060"
                     className="mt-1"
+                    value={longitude}
+                    onChange={(e) => setLongitude(e.target.value)}
+                    type="number"
+                    step="any"
+                    min="-180"
+                    max="180"
                   />
                 </div>
               </div>
@@ -97,14 +192,17 @@ function LandingPage() {
               </div>
             </div>
             <div>
-              <Image
-                src="https://placehold.co/600x400"
-                width={600}
-                height={400}
-                alt="Site location map"
-                className="rounded-lg shadow-lg w-full h-auto object-cover"
-                data-ai-hint="topographic map"
+              <InteractiveMap
+                latitude={validCoordinates ? lat : null}
+                longitude={validCoordinates ? lng : null}
+                radius={500}
+                className="w-full h-[400px]"
               />
+              {!validCoordinates && (latitude || longitude) && (
+                <p className="text-sm text-red-600 mt-2">
+                  Please enter valid coordinates (Latitude: -90 to 90, Longitude: -180 to 180)
+                </p>
+              )}
             </div>
           </div>
         </section>
@@ -117,24 +215,66 @@ function LandingPage() {
             Automatically retrieves vegetation, terrain slope, water bodies in
             and around your site
           </p>
-          <Card className="overflow-hidden relative">
-            <Image
-              src="https://placehold.co/1200x600"
-              width={1200}
-              height={600}
-              alt="Vegetation analysis map"
-              className="w-full h-auto object-cover"
-              data-ai-hint="vegetation map"
-            />
-            <Button className="absolute bottom-6 right-6 bg-stone-700 hover:bg-stone-800 text-white px-8 py-5">
-              Retrieve
+          
+          {error && (
+            <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+              {error}
+            </div>
+          )}
+          
+          <div className="space-y-4">
+            <Card className="overflow-hidden">
+              <VegetationMap
+                latitude={validCoordinates ? lat : null}
+                longitude={validCoordinates ? lng : null}
+                radius={500}
+                vegetationData={vegetationData}
+                className="w-full h-[600px]"
+              />
+            </Card>
+            
+            <Button 
+              onClick={handleVegetationAnalysis}
+              disabled={!validCoordinates || isAnalyzing}
+              className="w-full bg-stone-700 hover:bg-stone-800 text-white py-4 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg text-center"
+            >
+              {isAnalyzing ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  Analyzing...
+                </div>
+              ) : (
+                'Retrieve'
+              )}
             </Button>
-          </Card>
-          <p className="text-center mt-4 text-stone-600">
-            <a href="#" className="underline hover:text-stone-800">
-              click here to download vegetation and terrain report
-            </a>
-          </p>
+          </div>
+          
+          {analysisResult && (
+            <div className="mt-4 space-y-2">
+              <p className="text-center text-stone-600">
+                Analysis completed! Found {analysisResult.features_count} environmental features.
+              </p>
+              <p className="text-center text-stone-600">
+                <a 
+                  href="#" 
+                  className="underline hover:text-stone-800"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    // TODO: Implement report download
+                    alert('Report download functionality will be implemented soon!');
+                  }}
+                >
+                  click here to download vegetation and terrain report
+                </a>
+              </p>
+            </div>
+          )}
+          
+          {!validCoordinates && (
+            <p className="text-center mt-4 text-orange-600">
+              Please enter valid coordinates in the Site Location section above to enable vegetation analysis.
+            </p>
+          )}
         </section>
 
         <section id="climate-conditions">
@@ -145,24 +285,75 @@ function LandingPage() {
             Automatically retrieves the temperature, humidity, sun exposure, and
             wind conditions at your site.
           </p>
-          <Card className="overflow-hidden relative">
-            <Image
-              src="https://placehold.co/1200x600"
-              width={1200}
-              height={600}
-              alt="Climate conditions map"
-              className="w-full h-auto object-cover"
-              data-ai-hint="weather map"
-            />
-            <Button className="absolute bottom-6 right-6 bg-stone-700 hover:bg-stone-800 text-white px-8 py-5">
-              Retrieve
+          
+          {error && (
+            <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+              {error}
+            </div>
+          )}
+          
+          <div className="space-y-4">
+            <Card className="overflow-hidden">
+              <ClimateMap
+                latitude={validCoordinates ? lat : null}
+                longitude={validCoordinates ? lng : null}
+                radius={500}
+                climateData={climateData}
+                isLoading={isAnalyzingClimate}
+                className="w-full h-[600px]"
+              />
+            </Card>
+            
+            <Button 
+              onClick={handleClimateAnalysis}
+              disabled={!validCoordinates || isAnalyzingClimate}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg text-center"
+            >
+              {isAnalyzingClimate ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  Analyzing Climate...
+                </div>
+              ) : (
+                'Retrieve Climate Data'
+              )}
             </Button>
-          </Card>
-          <p className="text-center mt-4 text-stone-600">
-            <a href="#" className="underline hover:text-stone-800">
-              click here to download climate condition report
-            </a>
-          </p>
+          </div>
+          
+          {climateResult && (
+            <div className="mt-4 space-y-2">
+              <p className="text-center text-stone-600">
+                Climate analysis completed! Found {climateResult.stations_count} weather station(s).
+              </p>
+              {climateResult.current_weather && (
+                <div className="text-center text-stone-600">
+                  <p>Current conditions: {climateResult.current_weather.description || 'Data available'}</p>
+                  {climateResult.current_weather.temperature && (
+                    <p>Temperature: {climateResult.current_weather.temperature}°C</p>
+                  )}
+                </div>
+              )}
+              <p className="text-center text-stone-600">
+                <a 
+                  href="#" 
+                  className="underline hover:text-stone-800"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    // TODO: Implement climate report download
+                    alert('Climate report download functionality will be implemented soon!');
+                  }}
+                >
+                  click here to download climate condition report
+                </a>
+              </p>
+            </div>
+          )}
+          
+          {!validCoordinates && (
+            <p className="text-center mt-4 text-orange-600">
+              Please enter valid coordinates in the Site Location section above to enable climate analysis.
+            </p>
+          )}
         </section>
       </main>
     </div>

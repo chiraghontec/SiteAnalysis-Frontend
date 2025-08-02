@@ -57,3 +57,30 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Leaflet map z-index fixes */
+.leaflet-container {
+  z-index: 1 !important;
+}
+
+.leaflet-control-container {
+  z-index: 2 !important;
+}
+
+.leaflet-popup {
+  z-index: 3 !important;
+}
+
+/* Ensure maps don't interfere with navigation */
+.leaflet-map-pane {
+  z-index: 1 !important;
+}
+
+/* Fix for overlapping elements */
+.leaflet-container .leaflet-control-zoom {
+  z-index: 2 !important;
+}
+
+.leaflet-container .leaflet-control-attribution {
+  z-index: 2 !important;
+}
