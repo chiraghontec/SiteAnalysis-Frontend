@@ -7,7 +7,6 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
-import { FiltersSheet } from '@/components/FiltersSheet';
 
 function LandingPage() {
   return (
@@ -24,9 +23,6 @@ function LandingPage() {
             Open
           </Button>
         </div>
-        <div className="absolute top-4 right-4 z-10">
-          <FiltersSheet />
-        </div>
         <nav className="absolute bottom-0 left-0 right-0 z-10">
           <div className="container mx-auto">
             <div className="flex items-center gap-8 border-t border-stone-500 py-3 text-sm">
@@ -35,6 +31,9 @@ function LandingPage() {
                 className="flex items-center gap-1 text-white/80 hover:text-white"
               >
                 ANALYSIS
+              </Link>
+              <Link href="/filters" className="text-white/80 hover:text-white">
+                FILTERS
               </Link>
               <a href="#" className="text-white/80 hover:text-white">
                 SOURCES
