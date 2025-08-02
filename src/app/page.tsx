@@ -40,6 +40,15 @@ function LandingPage() {
       return;
     }
 
+    // Save coordinates to localStorage for analysis page
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('siteLatitude', lat.toString());
+      localStorage.setItem('siteLongitude', lng.toString());
+      localStorage.setItem('siteName', `Site at ${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+      // Also save in the format expected by filters page
+      localStorage.setItem('currentCoordinates', JSON.stringify({ lat, lng }));
+    }
+
     setIsAnalyzing(true);
     setError('');
 
@@ -66,6 +75,15 @@ function LandingPage() {
     if (!validCoordinates || !lat || !lng) {
       setError('Please enter valid coordinates first');
       return;
+    }
+
+    // Save coordinates to localStorage for analysis page
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('siteLatitude', lat.toString());
+      localStorage.setItem('siteLongitude', lng.toString());
+      localStorage.setItem('siteName', `Site at ${lat.toFixed(4)}, ${lng.toFixed(4)}`);
+      // Also save in the format expected by filters page
+      localStorage.setItem('currentCoordinates', JSON.stringify({ lat, lng }));
     }
 
     setIsAnalyzingClimate(true);
@@ -254,19 +272,29 @@ function LandingPage() {
               <p className="text-center text-stone-600">
                 Analysis completed! Found {analysisResult.features_count} environmental features.
               </p>
-              <p className="text-center text-stone-600">
+              <div className="flex justify-center gap-4 flex-wrap">
+                <Link href="/filters">
+                  <Button className="bg-green-600 hover:bg-green-700 text-white">
+                    View Interactive Filters Map
+                  </Button>
+                </Link>
+                <Link href="/analysis">
+                  <Button variant="outline" className="text-stone-700 border-stone-700 hover:bg-stone-50">
+                    View Detailed Analysis Report
+                  </Button>
+                </Link>
                 <a 
                   href="#" 
-                  className="underline hover:text-stone-800"
+                  className="underline hover:text-stone-800 flex items-center text-stone-600"
                   onClick={(e) => {
                     e.preventDefault();
                     // TODO: Implement report download
                     alert('Report download functionality will be implemented soon!');
                   }}
                 >
-                  click here to download vegetation and terrain report
+                  Download Vegetation Report
                 </a>
-              </p>
+              </div>
             </div>
           )}
           
@@ -327,25 +355,35 @@ function LandingPage() {
               </p>
               {climateResult.current_weather && (
                 <div className="text-center text-stone-600">
-                  <p>Current conditions: {climateResult.current_weather.description || 'Data available'}</p>
-                  {climateResult.current_weather.temperature && (
-                    <p>Temperature: {climateResult.current_weather.temperature}°C</p>
+                  <p>Current conditions: {climateResult.current_weather.precipitation?.description || 'Data available'}</p>
+                  {climateResult.current_weather.temperature?.current && (
+                    <p>Temperature: {climateResult.current_weather.temperature.current}°C</p>
                   )}
                 </div>
               )}
-              <p className="text-center text-stone-600">
+              <div className="flex justify-center gap-4 flex-wrap">
+                <Link href="/filters">
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                    View Interactive Filters Map
+                  </Button>
+                </Link>
+                <Link href="/analysis">
+                  <Button variant="outline" className="text-blue-700 border-blue-700 hover:bg-blue-50">
+                    View Detailed Climate Report
+                  </Button>
+                </Link>
                 <a 
                   href="#" 
-                  className="underline hover:text-stone-800"
+                  className="underline hover:text-stone-800 flex items-center text-stone-600"
                   onClick={(e) => {
                     e.preventDefault();
                     // TODO: Implement climate report download
                     alert('Climate report download functionality will be implemented soon!');
                   }}
                 >
-                  click here to download climate condition report
+                  Download Climate Report
                 </a>
-              </p>
+              </div>
             </div>
           )}
           

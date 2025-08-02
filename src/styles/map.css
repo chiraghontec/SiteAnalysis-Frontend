@@ -1,0 +1,30 @@
+/* Leaflet styles for faster loading */
+@import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+
+/* Optimize loading */
+.leaflet-container {
+  background: #f8fafc;
+  outline: 0;
+}
+
+.leaflet-tile {
+  filter: none;
+  -webkit-filter: none;
+}
+
+/* Faster transitions */
+.leaflet-zoom-animated {
+  -webkit-transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+  transform-origin: 0 0;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.leaflet-popup-content {
+  margin: 8px 12px;
+  line-height: 1.4;
+}

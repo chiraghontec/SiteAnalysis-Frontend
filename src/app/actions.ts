@@ -1,7 +1,6 @@
 'use server';
 
 import { z } from 'zod';
-import { generateImageDescription } from '@/ai/flows/suggest-image-description';
 
 const formSchema = z.object({
   latitude: z.coerce.number().min(-90).max(90),
@@ -30,16 +29,17 @@ export async function generateDescriptionAction(formData: FormData): Promise<Act
   }
   
   try {
-    const result = await generateImageDescription(validation.data);
+    // Simple coordinate validation response
+    const { latitude, longitude } = validation.data;
     return {
       success: true,
-      description: result.description,
+      description: `Location analysis for coordinates: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`,
     };
   } catch (error) {
     console.error(error);
     return {
       success: false,
-      error: 'Failed to generate description. Please try again later.',
+      error: 'Failed to process coordinates. Please try again later.',
     };
   }
 }
