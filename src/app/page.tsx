@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ImageDescriptionGenerator } from '@/components/ImageDescriptionGenerator';
 import { Globe, BarChart, FileText } from 'lucide-react';
 
-export default function Home() {
+function LandingPage() {
   return (
     <>
       <section className="w-full py-20 md:py-32 lg:py-40 bg-card">
@@ -101,3 +101,5 @@ export default function Home() {
     </>
   );
 }
+
+export default LandingPage;
