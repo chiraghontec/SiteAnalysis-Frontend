@@ -26,6 +26,7 @@ function LandingPage() {
           <div className="container mx-auto">
             <div className="flex items-center gap-8 border-t border-stone-500 py-3 text-sm">
               <Link href="/analysis" className="flex items-center gap-1 text-white/80 hover:text-white">ANALYSIS</Link>
+              <Link href="/filters" className="text-white/80 hover:text-white">FILTERS</Link>
               <a href="#" className="text-white/80 hover:text-white">SOURCES</a>
               <a href="#" className="text-white/80 hover:text-white">FEEDBACK</a>
             </div>
