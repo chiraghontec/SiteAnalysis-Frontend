@@ -1,27 +1,51 @@
-import { MountainSnow, Twitter, Github, Linkedin } from 'lucide-react';
+
 import Link from 'next/link';
 
 export function Footer() {
   return (
-    <footer className="border-t bg-card">
-      <div className="container mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <div className="flex items-center gap-2">
-            <MountainSnow className="h-6 w-6 text-primary" />
-            <span className="font-bold text-lg text-foreground">Terra Cognita</span>
+    <footer className="bg-stone-700 text-stone-300">
+      <div className="container mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8">
+          <div className="space-y-3">
+            <h4 className="font-semibold text-white">Dashboard</h4>
+            <ul className="space-y-2">
+              <li><Link href="#" className="hover:text-white">Home</Link></li>
+            </ul>
           </div>
-          <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} Terra Cognita. All rights reserved.</p>
-          <div className="flex items-center gap-4">
-            <Link href="#" className="text-muted-foreground transition-colors hover:text-foreground">
-              <Twitter className="h-5 w-5" />
-            </Link>
-            <Link href="#" className="text-muted-foreground transition-colors hover:text-foreground">
-              <Github className="h-5 w-5" />
-            </Link>
-            <Link href="#" className="text-muted-foreground transition-colors hover:text-foreground">
-              <Linkedin className="h-5 w-5" />
-            </Link>
+          <div className="space-y-3">
+            <h4 className="font-semibold text-white">Sources</h4>
+             <ul className="space-y-2">
+              <li><Link href="#" className="hover:text-white">Data</Link></li>
+            </ul>
           </div>
+          <div className="space-y-3">
+            <h4 className="font-semibold text-white">Feedback</h4>
+             <ul className="space-y-2">
+              <li><Link href="#" className="hover:text-white">Survey</Link></li>
+            </ul>
+          </div>
+          <div className="space-y-3">
+            <h4 className="font-semibold text-white">About</h4>
+            <ul className="space-y-2">
+              <li><Link href="#" className="hover:text-white">Our Mission</Link></li>
+            </ul>
+          </div>
+          <div className="space-y-3">
+            <h4 className="font-semibold text-white">Contact</h4>
+            <ul className="space-y-2">
+              <li><Link href="#" className="hover:text-white">Support</Link></li>
+            </ul>
+          </div>
+           <div className="space-y-3">
+            <h4 className="font-semibold text-white">Terms And Conditions</h4>
+            <ul className="space-y-2">
+              <li><Link href="#" className="hover:text-white">Privacy Policy</Link></li>
+            </ul>
+          </div>
+        </div>
+        <div className="mt-12 pt-8 border-t border-stone-600 flex flex-col sm:flex-row justify-between items-center">
+          <p className="text-sm">&copy; {new Date().getFullYear()} XYZ copyright. All rights reserved.</p>
+          <div className="w-20 h-12 bg-stone-500 rounded-md mt-4 sm:mt-0"></div>
         </div>
       </div>
     </footer>
