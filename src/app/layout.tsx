@@ -6,9 +6,9 @@ import { Footer } from '@/components/Footer';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'Terra Cognita',
+  title: 'AI Powered Site Analysis',
   description:
-    'A clean, versatile informational web app focusing on content presentation.',
+    'Site Analysis tool that uses AI to analyze and provide insights on websites.',
 };
 
 export default function RootLayout({
