@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Test site</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Geoman CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.13.1/dist/leaflet-geoman.css" />
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- Top toolbar -->
+  <div id="toolbar">
+    <div class="row">
+      <div class="group">
+        <button id="btn-marker">📍 Marker</button>
+        <button id="btn-polygon">⬠ Polygon</button>
+        <button id="btn-polyline">〰 Polyline</button>
+        <button id="btn-rectangle">▭ Rectangle</button>
+        <button id="btn-circle">⚪ Circle</button>
+        <button id="btn-freehand">✏ Freehand Polygon</button>
+        <button id="btn-freehand-line">✏ Freehand Line</button>
+        <button id="btn-edit">✎ Edit</button>
+        <button id="btn-drag">🖐 Drag</button>
+        <button id="btn-delete">🗑 Delete</button>
+        <button id="btn-undo">↶ Undo</button>
+        <button id="btn-redo">↷ Redo</button>
+        <button id="btn-clear">❌ Clear</button>
+        <button id="btn-export">⬇ Export</button>
+      </div>
+
+      <!-- Search (Nominatim) -->
+      <div class="group search">
+        <input id="search-input" type="text" placeholder="Search place or address…" />
+        <button id="btn-search">Search</button>
+        <div id="search-results" class="dropdown"></div>
+      </div>
+
+      <!-- Turf tools -->
+      <div class="group turf">
+        <span class="label">Buffer (m):</span>
+        <input id="buffer-m" type="number" min="1" step="1" value="50" />
+        <button id="btn-buffer">➕ Buffer selected</button>
+        <span class="sep"></span>
+        <span class="label">Simplify:</span>
+        <input id="simplify-range" type="range" min="0" max="10" step="1" value="3" />
+        <label class="label small"><input id="simplify-hq" type="checkbox" /> High quality</label>
+        <span id="simplify-val" class="label small">t=0.0003</span>
+        <span id="metrics" class="metrics">–</span>
+      </div>
+    </div>
+  </div>
+
+  <pre id="geojson"></pre>
+
+  <!-- JS libs -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.13.1/dist/leaflet-geoman.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+
+  <!-- App -->
+  <script src="js/app.js"></script>
+</body>
+</html>
